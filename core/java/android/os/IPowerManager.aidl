@@ -54,6 +54,7 @@ interface IPowerManager
     // sets the attention light (used by phone app only)
     void setAttentionLight(boolean on, int color);
 
+
     void cpuBoost(int duration);
 
     void setKeyboardVisibility(boolean visible);
@@ -62,4 +63,8 @@ interface IPowerManager
 
 	void setPowerProfile(String profile);
 	String getPowerProfile();
+
+    // blocked wakelock support
+    String getSeenWakeLocks();
+
 }
