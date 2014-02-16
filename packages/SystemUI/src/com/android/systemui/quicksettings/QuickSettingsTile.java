@@ -40,6 +40,7 @@ public class QuickSettingsTile implements OnClickListener {
     protected PhoneStatusBar mStatusbarService;
     protected QuickSettingsController mQsc;
     protected SharedPreferences mPrefs;
+    protected int mTileTextColor;
 
     public QuickSettingsTile(Context context, QuickSettingsController qsc) {
         this(context, qsc, R.layout.quick_settings_tile_basic);
@@ -60,6 +61,7 @@ public class QuickSettingsTile implements OnClickListener {
         container.updateResources();
         mTileTextSize = container.getTileTextSize();
         mTileTextPadding = container.getTileTextPadding();
+        mTileTextColor = container.getTileTextColor();
         mTile = (QuickSettingsTileView) inflater.inflate(
                 R.layout.quick_settings_tile, container, false);
         mTile.setContent(mTileLayout, inflater);
@@ -128,6 +130,9 @@ public class QuickSettingsTile implements OnClickListener {
             int dpi = mContext.getResources().getDisplayMetrics().densityDpi;
             if (dpi > DisplayMetrics.DENSITY_HIGH) {
                 tv.setPadding(0, mTileTextPadding, 0, 0);
+            }
+            if (mTileTextColor != -2) {
+                tv.setTextColor(mTileTextColor);
             }
         }
         View image = getImageView();
