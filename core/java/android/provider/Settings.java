@@ -2574,7 +2574,9 @@ public final class Settings {
         public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
 
 
- 
+        public static final String TOAST_ANIMATION = "toast_animation";
+
+      
         public static final String ENABLE_MWI_NOTIFICATION = "enable_mwi_notification";
 
         /**
