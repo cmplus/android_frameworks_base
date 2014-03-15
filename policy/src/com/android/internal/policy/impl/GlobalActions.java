@@ -19,6 +19,7 @@ package com.android.internal.policy.impl;
 
 import com.android.internal.app.AlertController;
 import com.android.internal.app.AlertController.AlertParams;
+import com.android.internal.statusbar.IStatusBarService;
 import com.android.internal.telephony.TelephonyIntents;
 import com.android.internal.telephony.TelephonyProperties;
 import com.android.internal.R;
@@ -91,7 +92,6 @@ import android.os.IBinder;
 import android.os.Messenger;
 import android.os.RemoteException;
 
-
 /**
  * Helper to show the global actions dialog.  Each item is an {@link Action} that
  * may show depending on whether the keyguard is showing, and whether the device
@@ -116,6 +116,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private Action mSilentModeAction;
     private ToggleAction mAirplaneModeOn;
     private ToggleAction mExpandDesktopModeOn;
+    private ToggleAction mMobileDataOn;
 
     private MyAdapter mAdapter;
 
@@ -154,7 +155,9 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         telephonyManager.listen(mPhoneStateListener, PhoneStateListener.LISTEN_SERVICE_STATE);
         ConnectivityManager cm = (ConnectivityManager)
                 context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
         mHasTelephony = cm.isNetworkSupported(ConnectivityManager.TYPE_MOBILE);
+
         mContext.getContentResolver().registerContentObserver(
                 Settings.Global.getUriFor(Settings.Global.AIRPLANE_MODE_ON), true,
                 mAirplaneModeObserver);
@@ -210,6 +213,14 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     private void handleShow() {
         awakenIfNecessary();
         prepareDialog();
+
+        final IStatusBarService barService = IStatusBarService.Stub.asInterface(
+              ServiceManager.getService(Context.STATUS_BAR_SERVICE));
+        try {
+             barService.collapsePanels();
+        } catch (RemoteException ex) {
+             // bad bad
+        }
 
         WindowManager.LayoutParams attrs = mDialog.getWindow().getAttributes();
         attrs.setTitle("GlobalActions");
@@ -301,6 +312,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         };
         onAirplaneModeChanged();
 
+
         final ContentResolver cr = mContext.getContentResolver();
         mItems = new ArrayList<Action>();
 
@@ -315,6 +327,7 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
         final boolean quickbootEnabled = Settings.Global.getInt(
                 mContext.getContentResolver(), Settings.Global.ENABLE_QUICKBOOT,
                 quickbootAvailable) == 1;
+
 
         // first: power off
         mItems.add(
@@ -462,6 +475,32 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
                     });
             }
 
+        }
+
+        // next: onthego, if enabled
+        if (Settings.System.getInt(mContext.getContentResolver(),
+                Settings.System.ONTHEGO_IN_POWER_MENU, 0) != 0) {
+            mItems.add(
+                new SinglePressAction(com.android.internal.R.drawable.ic_lock_onthego,
+                        R.string.global_action_onthego) {
+
+                    public void onPress() {
+                        startOnTheGo();
+                    }
+
+                    public boolean onLongPress() {
+                        stopOnTheGo();
+                        return true;
+                    }
+
+                    public boolean showDuringKeyguard() {
+                        return false;
+                    }
+
+                    public boolean showBeforeProvisioning() {
+                        return true;
+                    }
+                });
         }
 
         // next: airplane mode
@@ -800,6 +839,19 @@ class GlobalActions implements DialogInterface.OnDismissListener, DialogInterfac
     }
 
 
+
+    private void startOnTheGo() {
+        Intent startIntent = new Intent();
+        startIntent.setAction("com.android.systemui.action.ON_THE_GO_START");
+        mContext.sendBroadcast(startIntent);
+    }
+
+    private void stopOnTheGo() {
+        Intent stopIntent = new Intent();
+        stopIntent.setAction("com.android.systemui.action.ON_THE_GO_STOP");
+        mContext.sendBroadcast(stopIntent);
+        mHandler.sendEmptyMessage(MESSAGE_DISMISS);
+    }
 
     private void prepareDialog() {
         refreshSilentMode();

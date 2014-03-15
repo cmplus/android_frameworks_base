@@ -2566,9 +2566,8 @@ public final class Settings {
          */
         public static final String BATTERY_LIGHT_FULL_COLOR = "battery_light_full_color";
 
-        /** Sprint MWI Quirk: Show message wait indicator notifications
-         * @hide
-         */
+
+ 
         public static final String ENABLE_MWI_NOTIFICATION = "enable_mwi_notification";
 
         /**
@@ -2783,6 +2782,12 @@ public final class Settings {
          * @hide
          */
         public static final String POINTER_SPEED = "pointer_speed";
+
+        public static final String ON_THE_GO_ALPHA = "on_the_go_alpha";
+
+        public static final String ON_THE_GO_CAMERA = "on_the_go_camera";
+
+        public static final String ONTHEGO_IN_POWER_MENU = "onthego_in_power_menu";
 
         /**
          * I am the lolrus.
