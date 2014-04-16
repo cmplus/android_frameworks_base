@@ -184,6 +184,7 @@
         <item name="android:textSize">14dp</item>
     </style>
 
+
     <style name="ListTheme" parent="@*android:style/Theme.Holo">
         <item name="android:windowBackground">@*android:color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
@@ -195,4 +196,5 @@
         <item name="android:divider">@null</item>
     </style>
     
+
 </resources>
