@@ -143,7 +143,7 @@ public class AppCircleSidebar extends FrameLayout implements PackageAdapter.OnCi
         public void update() {
             final ContentResolver resolver = mContext.getContentResolver();
             setAppBarVisibility(Settings.System.getIntForUser(
-                    resolver, Settings.System.ENABLE_APP_CIRCLE_BAR, 0,
+                    resolver, Settings.System.ENABLE_APP_CIRCLE_BAR, 1,
                     UserHandle.USER_CURRENT_OR_SELF) == 1);
             String includedApps = Settings.System.getStringForUser(resolver,
                     Settings.System.WHITELIST_APP_CIRCLE_BAR,
