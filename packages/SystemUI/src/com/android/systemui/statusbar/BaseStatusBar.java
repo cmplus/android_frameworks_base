@@ -15,7 +15,7 @@
  */
 
 package com.android.systemui.statusbar;
-
+import android.content.pm.PackageManager;
 import android.app.ActivityManager;
 import android.view.Gravity;
 import android.graphics.PixelFormat;
@@ -455,6 +455,13 @@ public abstract class BaseStatusBar extends SystemUI implements
                 null, UserHandle.CURRENT);
     }
 
+  private void launchFloatingWindow(String packageName) {
+        PackageManager pm = mContext.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(packageName);
+        intent.addFlags(Intent.FLAG_FLOATING_WINDOW);
+        mContext.startActivity(intent);
+    }
+
     protected View.OnLongClickListener getNotificationLongClicker() {
         return new View.OnLongClickListener() {
             @Override
@@ -502,6 +509,9 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     .getSystemService(
                                     Context.ACTIVITY_SERVICE);
                             am.forceStopPackage(packageNameF);
+                        } else if (item.getItemId() == R.id.notification_floating_window) {
+                            launchFloatingWindow(packageNameF);
+                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else if (item.getItemId() == R.id.notification_inspect_item_wipe_app) {
                             ActivityManager am = (ActivityManager) mContext
                                     .getSystemService(Context.ACTIVITY_SERVICE);

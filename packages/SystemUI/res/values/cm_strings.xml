@@ -120,5 +120,6 @@
     <string name="sim_slot_3" translatable="false">3</string>
 
     <string name="app_stop_item_title">Kill app</string>
+    <string name="status_bar_notification_floating_window_title">Float view</string>
 
 </resources>
