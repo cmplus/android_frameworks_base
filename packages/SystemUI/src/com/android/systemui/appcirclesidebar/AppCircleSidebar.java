@@ -125,7 +125,7 @@ public class AppCircleSidebar extends FrameLayout implements PackageAdapter.OnCi
         void observe() {
             final ContentResolver resolver = mContext.getContentResolver();
             resolver.registerContentObserver(Settings.System.getUriFor(
-                    Settings.System.ENABLE_APP_CIRCLE_BAR), false, this);
+                    Settings.System.ENABLE_APP_CIRCLE_BAR), true, this);
             resolver.registerContentObserver(Settings.System.getUriFor(
                     Settings.System.WHITELIST_APP_CIRCLE_BAR), false, this);
             update();
