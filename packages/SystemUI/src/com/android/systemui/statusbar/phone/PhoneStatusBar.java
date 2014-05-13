@@ -694,6 +694,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
 
 
+            addAppCircleSidebar();
+        
+
 
         // figure out which pixel-format to use for the status bar.
         mPixelFormat = PixelFormat.OPAQUE;
