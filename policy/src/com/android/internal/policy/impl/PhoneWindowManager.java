@@ -528,7 +528,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     // Screenshot trigger states
     // Time to volume and power must be pressed within this interval of each other.
-    private static final long ACTION_CHORD_DEBOUNCE_DELAY_MILLIS = 150;
+    private static final long ACTION_CHORD_DEBOUNCE_DELAY_MILLIS = 150; 
     // Increase the chord delay when taking a screenshot from the keyguard
     private static final float KEYGUARD_SCREENSHOT_CHORD_DELAY_MULTIPLIER = 2.5f;
     // Time to volume and power must be pressed within this interval of each other.
@@ -540,7 +540,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private boolean mVolumeDownKeyTriggered;
     private long mVolumeDownKeyTime;
 
-    private long mVolumeUpKeyTime;
     private boolean mVolumeDownKeyConsumedByChord;
     private boolean mVolumeUpKeyConsumedByChord;
 
@@ -943,6 +942,9 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                 cancelPendingPowerKeyAction();
 
                 mHandler.postDelayed(mScreencastRunnable, getScreenshotChordLongPressDelay());
+            }
+        }
+    }
 
     private void interceptScreenrecordChord() {
         if (mScreenrecordChordEnabled
@@ -1002,6 +1004,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
     private void cancelPendingRingerChordAction() {
         mHandler.removeCallbacks(mRingerChordLongPress);
+     }
 
     private void cancelPendingScreenrecordChordAction() {
         mHandler.removeCallbacks(mScreenrecordRunnable);
@@ -2537,6 +2540,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
 
         if (keyCode == KeyEvent.KEYCODE_BACK && !down) {
             mHandler.removeCallbacks(mBackLongPress);
+        }
 
         // If we think we might have a volume up & power key chord on the way
         // but we're not sure, then tell the dispatcher to wait a little while and
@@ -4639,6 +4643,8 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private void releaseQuickBootWakeLock() {
         if (mQuickBootWakeLock.isHeld()) {
             mQuickBootWakeLock.release();
+        }
+    }
 
     // Assume this is called from the Handler thread.
     private void takeScreenrecord() {

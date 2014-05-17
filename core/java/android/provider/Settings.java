@@ -2608,6 +2608,12 @@ public final class Settings {
         /**
          * @deprecated Use {@link android.provider.Settings.Global#POWER_SOUNDS_ENABLED}
          * instead
+         * Show ScreenRecord in Power Menu
+         * @hide
+         */
+        public static final String SCREENRECORD_IN_POWER_MENU = "screenrecord_in_power_menu";
+
+        /** Sprint MWI Quirk: Show message wait indicator notifications
          * @hide
          */
         @Deprecated
