@@ -19,6 +19,7 @@
 
 package com.android.systemui.nameless.onthego;
 
+import android.view.Surface;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -213,8 +214,7 @@ public class OnTheGoService extends Service implements FaceDetectionListener {
 
     private void setupViews() {
         int cameraType = Settings.System.getInt(mContext.getContentResolver(),
-                Settings.System.ON_THE_GO_CAMERA,
-                0);
+                Settings.System.ON_THE_GO_CAMERA, 0);
 
         boolean success = true;
         try {
@@ -239,12 +239,13 @@ public class OnTheGoService extends Service implements FaceDetectionListener {
         );
 
         final TextureView mTextureView = new TextureView(mContext);
+        final WindowManager wm = (WindowManager) getSystemService(WINDOW_SERVICE);
         mTextureView.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int i, int i2) {
                 try {
                     if (mCamera != null) {
-                        mCamera.setDisplayOrientation(90);
+                        mCamera.setDisplayOrientation(wm.getDefaultDisplay().getRotation() + 90);
                         mCamera.setPreviewTexture(surfaceTexture);
                         mCamera.startPreview();
                         try {
@@ -261,6 +262,7 @@ public class OnTheGoService extends Service implements FaceDetectionListener {
 
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture surfaceTexture, int i, int i2) {
+                setCameraDisplayOrientation();
             }
 
             @Override
@@ -373,4 +375,40 @@ public class OnTheGoService extends Service implements FaceDetectionListener {
         }
         mNotificationManager.notify(ONTHEGO_NOTIFICATION_ID, builder.build());
     }
+private void setCameraDisplayOrientation() {
+        if (mCamera == null) return;
+
+        final Camera.CameraInfo info = new Camera.CameraInfo();
+        final int cameraType = Settings.System.getInt(getContentResolver(),
+                Settings.System.ON_THE_GO_CAMERA, 0);
+        Camera.getCameraInfo(cameraType, info);
+        final int rotation = ((WindowManager) getSystemService(Context.WINDOW_SERVICE))
+                .getDefaultDisplay().getRotation();
+
+        int degrees = 0;
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                degrees = 0;
+                break;
+            case Surface.ROTATION_90:
+                degrees = 90;
+                break;
+            case Surface.ROTATION_180:
+                degrees = 180;
+                break;
+            case Surface.ROTATION_270:
+                degrees = 270;
+                break;
+        }
+
+        int result;
+        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
+            result = (info.orientation + degrees) % 360;
+            result = (360 - result) % 360;  // compensate the mirror
+        } else {  // back-facing
+            result = (info.orientation - degrees + 360) % 360;
+        }
+        mCamera.setDisplayOrientation(result);
+    }
+
 }
