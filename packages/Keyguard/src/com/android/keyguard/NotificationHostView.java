@@ -260,41 +260,43 @@ public class NotificationHostView extends FrameLayout {
 
     @Override
     public void onFinishInflate() {
-        if (NotificationViewManager.NotificationListener != null) {
-            mNotifications.clear();
-            mNotificationsToAdd.clear();
-            mNotificationsToRemove.clear();
-            mShownNotifications = 0;
-            try {
-                StatusBarNotification[] sbns = mNotificationManager.getActiveNotificationsFromListener(NotificationViewManager.NotificationListener);
-                StatusBarNotification dismissedSbn;
-                for (StatusBarNotification sbn : sbns) {
-                    if ((dismissedSbn = mDismissedNotifications.get(describeNotification(sbn))) == null || dismissedSbn.getPostTime() != sbn.getPostTime())
-                        addNotification(sbn);
+        mNotifications.clear();
+        mNotificationsToAdd.clear();
+        mNotificationsToRemove.clear();
+        mShownNotifications = 0;
+        setOnTouchListener(new OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent ev) {
+                if (mShownNotifications > 0) {
+                    hideAllNotifications();
                 }
-            } catch (RemoteException e) {
-                Log.e(TAG, "Failed to get active notifications!");
+                return false;
             }
+        });
+        Point p = new Point();
+        mWindowManager.getDefaultDisplay().getSize(p);
+        mDisplayWidth = p.x;
+        mDisplayHeight = p.y;
+        mNotifView = (LinearLayout) findViewById(R.id.linearlayout);
+        mScrollView = (TouchModalScrollView) findViewById(R.id.scrollview);
+        mScrollView.setHostView(this);
+        mScrollView.setY(mDisplayHeight * OFFSET_TOP);
+        int maxHeight = Math.round(mDisplayHeight - mDisplayHeight * OFFSET_TOP);
+        mScrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                Math.min(maxHeight, NotificationViewManager.config.notificationsHeight * mNotificationMinRowHeight)));
+    }
 
-            setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent ev) {
-                    if (mShownNotifications > 0) {
-                        hideAllNotifications();
-                    }
-                    return false;
-                }
-            });
-            Point p = new Point();
-            mWindowManager.getDefaultDisplay().getSize(p);
-            mDisplayWidth = p.x;
-            mDisplayHeight = p.y;
-            mNotifView = (LinearLayout) findViewById(R.id.linearlayout);
-            mScrollView = (TouchModalScrollView) findViewById(R.id.scrollview);
-            mScrollView.setHostView(this);
-            mScrollView.setY(mDisplayHeight * OFFSET_TOP);
-            mScrollView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    Math.round(mDisplayHeight - mDisplayHeight * OFFSET_TOP)));
+    public void addNotifications() {
+        try {
+            StatusBarNotification[] sbns = mNotificationManager.getActiveNotificationsFromListener(NotificationViewManager.NotificationListener);
+            StatusBarNotification dismissedSbn;
+            for (StatusBarNotification sbn : sbns) {
+                if ((dismissedSbn = mDismissedNotifications.get(describeNotification(sbn))) == null || dismissedSbn.getPostTime() != sbn.getPostTime())
+                    addNotification(sbn);
+            }
+            bringToFront();
+        } catch (RemoteException e) {
+            Log.e(TAG, "Failed to get active notifications!");
         }
     }
 
@@ -335,7 +337,14 @@ public class NotificationHostView extends FrameLayout {
         final StatusBarNotification sbn = nv.statusBarNotification;
         mDismissedNotifications.remove(describeNotification(sbn));
 
-        boolean bigContentView = sbn.getNotification().bigContentView != null && NotificationViewManager.config.expandedView;
+        if (sbn.getNotification().contentView == null) {
+            if (sbn.getNotification().bigContentView == null) {
+                return;
+            }
+            forceBigContentView = true;
+        }
+        boolean bigContentView = sbn.getNotification().bigContentView != null &&
+                (NotificationViewManager.config.expandedView || sbn.getNotification().contentView == null);
         RemoteViews rv = forceBigContentView && bigContentView ? sbn.getNotification().bigContentView : sbn.getNotification().contentView;
         final View remoteView = rv.apply(mContext, null);
         int x = Math.round(mDisplayWidth - mNotificationMinHeight);
@@ -345,7 +354,7 @@ public class NotificationHostView extends FrameLayout {
             setBackgroundRecursive((ViewGroup)remoteView);
         }
         remoteView.setAlpha(1f);
-        if (bigContentView) {
+        if (bigContentView && sbn.getNotification().contentView != null) {
             if (forceBigContentView) {
                 remoteView.setOnLongClickListener(new View.OnLongClickListener() {
                     @Override

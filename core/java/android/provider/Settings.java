@@ -3384,16 +3384,16 @@ public final class Settings {
          */
         public static final String USE_EDGE_SERVICE_FOR_GESTURES = "edge_service_for_gestures";
 
-        /**
-         * Show the pending notification counts as overlays on the status bar
-         * @hide
-         */
+
+        public static final String LOCKSCREEN_NOTIFICATIONS_HEIGHT = "lockscreen_notifications_height";
+
+
         public static final String STATUS_BAR_NOTIF_COUNT = "status_bar_notif_count";
 
-        /**
-         * Show the pending notification counts as overlays on the status bar
-         * @hide
-         */
+
+        public static final String LOCKSCREEN_NOTIFICATIONS_WAKE_ON_NOTIFICATION = "lockscreen_notifications_wake_on_notification";
+
+ 
         public static final String SYSTEM_PROFILES_ENABLED = "system_profiles_enabled";
 
         /**
