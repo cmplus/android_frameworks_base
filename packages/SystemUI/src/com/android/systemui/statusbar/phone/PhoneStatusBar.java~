@@ -434,10 +434,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
             updateSettings();
         }
-       public void updateSettings() {
+       public void update() {
             final ContentResolver resolver = mContext.getContentResolver();
             updateCustomHeaderStatus(); 
-        }
     }
 
     class DevForceNavbarObserver extends ContentObserver {
