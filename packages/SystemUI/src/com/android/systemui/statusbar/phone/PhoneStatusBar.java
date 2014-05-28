@@ -434,10 +434,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         }
             updateSettings();
         }
-       public void updateSettings() {
-            final ContentResolver resolver = mContext.getContentResolver();
-            updateCustomHeaderStatus(); 
-        }
+
     }
 
     class DevForceNavbarObserver extends ContentObserver {
@@ -3195,8 +3192,8 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         super.userSwitched(newUserId);
     }
 
-    private void updateSettings() {
-        ContentResolver resolver = mContext.getContentResolver();
+    public void updateSettings() {
+        final ContentResolver resolver = mContext.getContentResolver();
         int autoBrightnessSetting = Settings.System.getIntForUser(
                 resolver, Settings.System.SCREEN_BRIGHTNESS_MODE, 0, mCurrentUserId);
 
@@ -3263,6 +3260,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mSignalClusterView.setStyle(signalStyle);
             mSignalTextView.setStyle(signalStyle);
         }
+
+            updateCustomHeaderStatus(); 
+        
     }
 
     private void resetUserSetupObserver() {
