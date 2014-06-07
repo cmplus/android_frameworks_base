@@ -498,10 +498,7 @@ public abstract class BaseStatusBar extends SystemUI implements
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                NotificationData.Entry  entry = (NotificationData.Entry) v.getTag();
-                StatusBarNotification sbn = entry.notification;
-                final String packageNameF = sbn.getPackageName();
-                final PendingIntent contentIntent = sbn.getNotification().contentIntent;
+            final String packageNameF = (String) v.getTag();
                 if (packageNameF == null) return false;
                 if (v.getWindowToken() == null) return false;
                 mNotificationBlamePopup = new PopupMenu(mContext, v);
@@ -544,9 +541,6 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     .getSystemService(
                                     Context.ACTIVITY_SERVICE);
                             am.forceStopPackage(packageNameF);
-                        } else if (item.getItemId() == R.id.notification_floating_window) {
-                            launchFloatingWindow(contentIntent);
-                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else if (item.getItemId() == R.id.notification_inspect_item_wipe_app) {
                             ActivityManager am = (ActivityManager) mContext
                                     .getSystemService(Context.ACTIVITY_SERVICE);
