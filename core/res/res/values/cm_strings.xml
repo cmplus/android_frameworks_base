@@ -208,6 +208,10 @@
     <string name="app_ops_write_mms">write an MMS message</string>
     <string name="app_ops_write_sms">write an SMS message</string>
 
+    <string name="setting_confirmation_ask_me_later">Ask later</string>
+    <string name="setting_confirmation_yes">Yes</string>
+    <string name="setting_confirmation_no">No</string>
+
     <string name="privacy_guard_dialog_title">Privacy Guard</string>
     <string name="privacy_guard_dialog_summary"><xliff:g id="app">%1$s</xliff:g> would like to <xliff:g id="op">%2$s</xliff:g>.</string>
 

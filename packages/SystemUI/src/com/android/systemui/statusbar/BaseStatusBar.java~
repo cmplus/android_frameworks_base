@@ -500,7 +500,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             public boolean onLongClick(View v) {
                 NotificationData.Entry  entry = (NotificationData.Entry) v.getTag();
                 StatusBarNotification sbn = entry.notification;
-                final String packageNameF = sbn.getPackageName();
+                final String packageNameF = (String) v.getTag();
                 final PendingIntent contentIntent = sbn.getNotification().contentIntent;
                 if (packageNameF == null) return false;
                 if (v.getWindowToken() == null) return false;

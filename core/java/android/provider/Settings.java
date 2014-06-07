@@ -3788,22 +3788,12 @@ public final class Settings {
         public static final String STATUS_BAR_CUSTOM_HEADER = "status_bar_custom_header";
 
         /**
-<<<<<<< HEAD
          * Either if notification peek is enabled of disabled
          * 0 = disabled (default)
          * 1 = enabled
-=======
-         * Setting to show the battery percentage text
->>>>>>> 177a89d... [1/2] Frameworks: Add in-the-spot user preference dialog
          * @hide
          */
         public static final String PEEK_STATE = "peek_state";
-
-        /**
-         * Quick settings quick pull down option
-         * @hide
-         */
-        public static final String QUICK_SETTINGS_QUICK_PULL_DOWN = "quick_settings_quick_pull_down";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -3916,13 +3906,6 @@ public final class Settings {
             RECENTS_SWIPE_FLOATING,
             STATUS_BAR_NOTIFICATION_SWIPE_FLOATING
         };
-
-        /**
-         * Settings to reset on user choice. They will fall back to their default value (0).
-         *
-         * @hide
-         */
-
 
         // Settings moved to Settings.Secure
 
