@@ -2058,6 +2058,10 @@
   <java-symbol type="anim" name="slide_in_left_no_fade" />
   <java-symbol type="anim" name="slide_out_right_no_fade" />
 
+  <!-- WiFi turn off notification -->
+  <java-symbol type="string" name="notify_turn_wifi_off_title" />
+
+
   <!-- Label for the Android system components when they are shown to the user. -->
   <java-symbol type="string" name="android_system_label" />
 
