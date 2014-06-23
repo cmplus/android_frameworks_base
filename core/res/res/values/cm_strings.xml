@@ -245,4 +245,12 @@
     <string name="floating_window_minimize">Minimize</string>
 
     <string name="global_action_onthego">On-the-go mode</string>
+
+    <!-- ADB over network notification -->
+    <string name="adb_net_active_notification_title">ADB over network enabled</string>
+    <!-- ADB over USB and network notification -->
+    <string name="adb_both_active_notification_title">ADB over USB &amp; network enabled</string>
+    <!-- ADB notification message-->
+    <string name="adb_active_generic_notification_message">Touch to disable debugging.</string>
+
 </resources>
