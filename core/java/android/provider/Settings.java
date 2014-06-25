@@ -3619,11 +3619,11 @@ public final class Settings {
          */
         public static final String POWER_MENU_PROFILES_ENABLED = "power_menu_profiles_enabled";
 
-        /**
-         * Enable Stylus Gestures
-         *
-         * @hide
-         */
+
+
+        public static final String HEADS_UP_FLOATING_WINDOW = "heads_up_floating_window";
+
+
         public static final String ENABLE_STYLUS_GESTURES = "enable_stylus_gestures";
 
         /**
