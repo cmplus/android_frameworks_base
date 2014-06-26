@@ -28,6 +28,7 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import com.android.systemui.statusbar.notification.NotificationHelper;
 
 import com.android.systemui.ExpandHelper;
 import com.android.systemui.R;
@@ -53,6 +54,7 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
     private ViewGroup mContentSlider;
 
     private NotificationData.Entry mHeadsUp;
+    protected NotificationHelper mNotificationHelper;
 
     public HeadsUpNotificationView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -68,12 +70,18 @@ public class HeadsUpNotificationView extends FrameLayout implements SwipeHelper.
         mBar = bar;
     }
 
+
+    public void setNotificationHelper(NotificationHelper notificationHelper) {
+        mNotificationHelper = notificationHelper;
+    }
+
     public ViewGroup getHolder() {
         return mContentHolder;
     }
 
     public boolean setNotification(NotificationData.Entry headsUp) {
         mHeadsUp = headsUp;
+        mHeadsUp.content.setOnClickListener(mNotificationHelper.getNotificationClickListener(headsUp, true));
         mHeadsUp.row.setExpanded(false);
         if (mContentHolder == null) {
             // too soon!
