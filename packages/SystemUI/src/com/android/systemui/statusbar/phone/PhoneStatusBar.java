@@ -512,7 +512,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             boolean wasUsing = mUseHeadsUp;
             mUseHeadsUp = ENABLE_HEADS_UP && Settings.System.getIntForUser(
                     mContext.getContentResolver(),
-                    Settings.System.HEADS_UP_NOTIFICATION, 0, UserHandle.USER_CURRENT) == 1;;
+                    Settings.System.HEADS_UP_NOTIFICATION, 0, UserHandle.USER_CURRENT) == 1;
             Log.d(TAG, "heads up is " + (mUseHeadsUp ? "enabled" : "disabled"));
             if (wasUsing != mUseHeadsUp) {
                 if (!mUseHeadsUp) {
@@ -881,12 +881,15 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         } else {
             mNetworkController = new NetworkController(mContext);
             mSignalClusterView = (SignalClusterView) mStatusBarView.findViewById(R.id.signal_cluster);
+            mNetworkController.addSignalCluster(mSignalClusterView);
+            mSignalClusterView.setNetworkController(mNetworkController);
+
             mSignalTextView = (SignalClusterTextView)
                     mStatusBarView.findViewById(R.id.signal_cluster_text);
-            mNetworkController.addSignalCluster(mSignalClusterView);
-            mNetworkController.addNetworkSignalChangedCallback(mSignalTextView);
-            mNetworkController.addSignalStrengthChangedCallback(mSignalTextView);
-            mSignalClusterView.setNetworkController(mNetworkController);
+            if (mSignalTextView != null) {
+                mNetworkController.addNetworkSignalChangedCallback(mSignalTextView);
+                mNetworkController.addSignalStrengthChangedCallback(mSignalTextView);
+            }
 
             final boolean isAPhone = mNetworkController.hasVoiceCallingFeature();
             if (isAPhone) {
@@ -1285,9 +1288,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams(
                 LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_STATUS_BAR_PANEL, // above the status bar!
-                WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN
-                      | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
-                      | WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
+                WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL
                       | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
                       | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH,
                 PixelFormat.TRANSPARENT);
@@ -1401,7 +1402,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
             final boolean sbVisible = (mSystemUiVisibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0
                     || (mStatusBarMode & View.STATUS_BAR_TRANSIENT) != 0;
-            if (!sbVisible) {
+            final boolean userForcedExpandedDesktop =
+                    mExpandedDesktopStyle == 1 || mExpandedDesktopStyle == 2;
+            if (!sbVisible && !userForcedExpandedDesktop) {
                 mHandler.removeMessages(MSG_HIDE_HEADS_UP);
                 mHandler.sendEmptyMessageDelayed(MSG_HIDE_HEADS_UP, 700);
             } else {
@@ -3285,7 +3288,9 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
             mMSimSignalClusterView.setStyle(signalStyle);
         } else {
             mSignalClusterView.setStyle(signalStyle);
-            mSignalTextView.setStyle(signalStyle);
+            if (mSignalTextView != null) {
+                mSignalTextView.setStyle(signalStyle);
+            }
         }
 
             updateCustomHeaderStatus(); 
@@ -3371,6 +3376,7 @@ public class PhoneStatusBar extends BaseStatusBar implements DemoMode,
 
         makeStatusBarView();
         repositionNavigationBar();
+        addHeadsUpView();
         if (mNavigationBarView != null) {
             mNavigationBarView.updateResources();
         }
