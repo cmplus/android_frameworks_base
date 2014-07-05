@@ -516,28 +516,18 @@ public abstract class BaseStatusBar extends SystemUI implements
                 null, UserHandle.CURRENT);
     }
 
-
-    private void launchFloatingWindow(PendingIntent pIntent) {
-        Intent overlay = new Intent();
-        overlay.addFlags(Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        try {
-            ActivityManagerNative.getDefault().resumeAppSwitches();
-            ActivityManagerNative.getDefault().dismissKeyguardOnNextActivity();
-        } catch (RemoteException e) {
-        }
-        try {
-            pIntent.send(mContext, 0, overlay);
-        } catch (PendingIntent.CanceledException e) {
-            // the stack trace isn't very helpful here.  Just log the exception message.
-            Slog.w(TAG, "Sending contentIntent failed: " + e);
-        }
+  private void launchFloatingWindow(String packageName) {
+        PackageManager pm = mContext.getPackageManager();
+        Intent intent = pm.getLaunchIntentForPackage(packageName);
+        intent.addFlags(Intent.FLAG_FLOATING_WINDOW);
+        mContext.startActivity(intent);
     }
 
     protected View.OnLongClickListener getNotificationLongClicker() {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-            final String packageNameF = (String) v.getTag();
+                final String packageNameF = (String) v.getTag();
                 if (packageNameF == null) return false;
                 if (v.getWindowToken() == null) return false;
                 mNotificationBlamePopup = new PopupMenu(mContext, v);
@@ -580,6 +570,9 @@ public abstract class BaseStatusBar extends SystemUI implements
                                     .getSystemService(
                                     Context.ACTIVITY_SERVICE);
                             am.forceStopPackage(packageNameF);
+                        } else if (item.getItemId() == R.id.notification_floating_window) {
+                            launchFloatingWindow(packageNameF);
+                            animateCollapsePanels(CommandQueue.FLAG_EXCLUDE_NONE);
                         } else if (item.getItemId() == R.id.notification_inspect_item_wipe_app) {
                             ActivityManager am = (ActivityManager) mContext
                                     .getSystemService(Context.ACTIVITY_SERVICE);
@@ -979,11 +972,7 @@ public abstract class BaseStatusBar extends SystemUI implements
             }
 
             //int flags = Intent.FLAG_FLOATING_WINDOW | Intent.FLAG_ACTIVITY_CLEAR_TASK;
-            if (mPile.launchNextNotificationFloating()) {
-                if (mPendingIntent != null) {
-                    launchFloatingWindow(mPendingIntent);
-                }
-            } else if (mPendingIntent != null) {
+            if (mPendingIntent != null) {
                 int[] pos = new int[2];
                 v.getLocationOnScreen(pos);
                 Intent overlay = new Intent();
