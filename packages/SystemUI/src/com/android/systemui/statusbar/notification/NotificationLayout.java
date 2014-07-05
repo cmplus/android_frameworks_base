@@ -104,6 +104,10 @@ public class NotificationLayout extends LinearLayout implements SwipeHelper.Call
     }
 
     @Override
+    public void onChildTriggered(View v) {
+    }
+
+    @Override
     public void onBeginDrag(View v) {
         mNotificationPeek.setAnimating(true);
     }
